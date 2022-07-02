@@ -5,22 +5,29 @@ import "CoreLibs/sprites"
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
-class("PointBody").extends(Sprite)
+class("PointBody").extends(gfx.sprite)
 
 function PointBody:init(x,y,dx,dy,mass)
-    PointBody.super.init()
+    PointBody.super.init(self)
     self.x = x
     self.y = y
     self.dx = dx
     self.dy = dy
     self.mass = mass
+
+    local r = 2
+    local img = gfx.image.new(r*2, r*2)
+    gfx.pushContext(img)
+        gfx.fillCircleAtPoint(r,r,r)
+    gfx.popContext()
+    self:setImage(img)
+
     self:moveTo(x,y)
     self:add()
-
 end
 
 function PointBody:update()
-    self:moveTo(x+dx,y+dy)
+    self:moveTo(self.x+self.dx,self.y+self.dy)
 end
 
 function PointBody:accelerate(ax, ay)
