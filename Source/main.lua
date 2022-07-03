@@ -8,6 +8,6 @@ local gfx <const> = pd.graphics
 local system = ThreeBodySystem()
 
 function pd.update()
-    gfx.sprite.update()
     system:update()
+    gfx.sprite.update()
 end

@@ -15,7 +15,7 @@ function PointBody:init(x,y,dx,dy,mass)
     self.dy = dy
     self.mass = mass
 
-    local r = 2
+    local r = 3
     local img = gfx.image.new(r*2, r*2)
     gfx.pushContext(img)
         gfx.fillCircleAtPoint(r,r,r)
@@ -26,11 +26,11 @@ function PointBody:init(x,y,dx,dy,mass)
     self:add()
 end
 
-function PointBody:update()
-    self:moveTo(self.x+self.dx,self.y+self.dy)
-end
-
 function PointBody:accelerate(ax, ay)
     self.dx += ax
     self.dy += ay
+end
+
+function PointBody:update()
+    self:moveTo(self.x + self.dx, self.y + self.dy)
 end
