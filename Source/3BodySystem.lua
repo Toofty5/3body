@@ -5,11 +5,11 @@ local gfx = pd.graphics
 
 class ("ThreeBodySystem").extends()
 
-function ThreeBodySystem:init()
+function ThreeBodySystem:init(n)
     ThreeBodySystem.super.init(self)
     self.bodies = {}
     --generate three random bodies
-    for i = 1, 3 do
+    for i = 1, n or 3 do
         local x = math.random(400)
         local y = math.random(240)
         table.insert(self.bodies, PointBody(x,y,0,0,100))
@@ -43,13 +43,22 @@ end
 --get the new x and y for each body, and then move simultaneously
 function ThreeBodySystem:simulate()
     self:normalize()
-    local r1 = self.one_body(self.bodies[1], {self.bodies[2], self.bodies[3]})
-    local r2 = self.one_body(self.bodies[2], {self.bodies[1], self.bodies[3]})
-    local r3 = self.one_body(self.bodies[3], {self.bodies[1], self.bodies[2]})
 
-    self.bodies[1]:accelerate(r1.x,r1.y)
-    self.bodies[2]:accelerate(r2.x,r2.y)
-    self.bodies[3]:accelerate(r3.x,r3.y)
+    -- local r1 = self.one_body(self.bodies[1], {self.bodies[2], self.bodies[3]})
+    -- local r2 = self.one_body(self.bodies[2], {self.bodies[1], self.bodies[3]})
+    -- local r3 = self.one_body(self.bodies[3], {self.bodies[1], self.bodies[2]})
+
+    -- self.bodies[1]:accelerate(r1.x,r1.y)
+    -- self.bodies[2]:accelerate(r2.x,r2.y)
+    -- self.bodies[3]:accelerate(r3.x,r3.y)
+
+    for i, this_body in ipairs(self.bodies) do
+        local others = {table.unpack(self.bodies,1,i-1), table.unpack(self.bodies,i+1)}
+        local r1 = self.one_body(this_body, others)
+        print(i, r1.x, r1.y)
+        this_body:accelerate(r1.x, r1.y)
+    end
+
 
 end
 
@@ -60,7 +69,7 @@ end
 
 --calculate new position for a single body given an array of others
 function ThreeBodySystem.one_body(this_body,other_bodies)
-    local GRAV <const> = 10 -- gravitational coefficient
+    local GRAV <const> = 1 -- gravitational coefficient
     local x_total, y_total = 0,0
 
     for i,body in pairs(other_bodies) do
